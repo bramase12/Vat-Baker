@@ -14,8 +14,8 @@ namespace VATSystem
         public bool loop = true;
         public bool playOnStart = true;
 
-        private MeshFilter meshFilter;
-        private MeshRenderer meshRenderer;
+        private MeshFilter[] meshFilters;
+        private MeshRenderer[] meshRenderers;
         private VATAnimationData currentClipData;
         private float currentFrame;
         private bool isPlaying;
@@ -37,12 +37,8 @@ namespace VATSystem
 
         private void Awake()
         {
-            var meshChild = transform.Find("Mesh");
-            if (meshChild != null)
-            {
-                meshFilter = meshChild.GetComponent<MeshFilter>();
-                meshRenderer = meshChild.GetComponent<MeshRenderer>();
-            }
+            meshFilters = GetComponentsInChildren<MeshFilter>(true);
+            meshRenderers = GetComponentsInChildren<MeshRenderer>(true);
         }
 
         private void Start()
@@ -72,22 +68,28 @@ namespace VATSystem
                 return;
             }
 
+            if (meshRenderers == null || meshRenderers.Length == 0) return;
+
             var block = new MaterialPropertyBlock();
-            meshRenderer.GetPropertyBlock(block);
+            foreach (var mr in meshRenderers)
+            {
+                if (mr == null) continue;
+                mr.GetPropertyBlock(block);
 
-            block.SetTexture(_PosTex, currentClipData.positionTexture);
-            block.SetTexture(_NrmTex, currentClipData.normalTexture);
-            if (currentClipData.tangentTexture != null)
-                block.SetTexture(_TanTex, currentClipData.tangentTexture);
-            block.SetFloat(_VertexCount, currentClipData.vertexCount);
-            block.SetFloat(_TotalFrames, currentClipData.totalFrames);
-            block.SetFloat(_TexWidth, currentClipData.textureWidth);
-            block.SetFloat(_RowsPerFrame, currentClipData.rowsPerFrame);
-            block.SetFloat(_AnimFrameA, currentFrame);
-            block.SetFloat(_AnimFrameB, currentFrame);
-            block.SetFloat(_BlendWeight, 1f);
+                block.SetTexture(_PosTex, currentClipData.positionTexture);
+                block.SetTexture(_NrmTex, currentClipData.normalTexture);
+                if (currentClipData.tangentTexture != null)
+                    block.SetTexture(_TanTex, currentClipData.tangentTexture);
+                block.SetFloat(_VertexCount, currentClipData.vertexCount);
+                block.SetFloat(_TotalFrames, currentClipData.totalFrames);
+                block.SetFloat(_TexWidth, currentClipData.textureWidth);
+                block.SetFloat(_RowsPerFrame, currentClipData.rowsPerFrame);
+                block.SetFloat(_AnimFrameA, currentFrame);
+                block.SetFloat(_AnimFrameB, currentFrame);
+                block.SetFloat(_BlendWeight, 1f);
 
-            meshRenderer.SetPropertyBlock(block);
+                mr.SetPropertyBlock(block);
+            }
         }
 
         public void Play(string animationName, float normalizedTime = 0f)
@@ -132,21 +134,26 @@ namespace VATSystem
             if (prefabVATAnim != null && prefabVATAnim.singleClipData != null)
                 currentClipData = prefabVATAnim.singleClipData;
 
-            var prefabMeshChild = animationPrefab.transform.Find("Mesh");
-            if (prefabMeshChild == null)
+            var prefabMFs = animationPrefab.GetComponentsInChildren<MeshFilter>(true);
+            var prefabMRs = animationPrefab.GetComponentsInChildren<MeshRenderer>(true);
+
+            if (meshFilters != null && prefabMFs != null)
             {
-                Debug.LogError("Animation prefab does not contain a child named 'Mesh'.");
-                return;
+                for (int i = 0; i < meshFilters.Length && i < prefabMFs.Length; i++)
+                {
+                    if (meshFilters[i] != null && prefabMFs[i] != null)
+                        meshFilters[i].sharedMesh = prefabMFs[i].sharedMesh;
+                }
             }
 
-            var prefabMF = prefabMeshChild.GetComponent<MeshFilter>();
-            var prefabMR = prefabMeshChild.GetComponent<MeshRenderer>();
-
-            if (prefabMF != null && meshFilter != null)
-                meshFilter.sharedMesh = prefabMF.sharedMesh;
-
-            if (prefabMR != null && meshRenderer != null)
-                meshRenderer.sharedMaterials = prefabMR.sharedMaterials;
+            if (meshRenderers != null && prefabMRs != null)
+            {
+                for (int i = 0; i < meshRenderers.Length && i < prefabMRs.Length; i++)
+                {
+                    if (meshRenderers[i] != null && prefabMRs[i] != null)
+                        meshRenderers[i].sharedMaterials = prefabMRs[i].sharedMaterials;
+                }
+            }
         }
 
         public void Stop() => isPlaying = false;

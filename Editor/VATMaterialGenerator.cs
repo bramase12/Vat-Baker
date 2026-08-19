@@ -5,15 +5,26 @@ namespace VATSystem
 {
     public static class VATMaterialGenerator
     {
-        private const string ShaderName = "VAT/VAT";
-
         public static Material CreateVATMaterial(Material original, VATAnimationData animData)
         {
-            Shader shader = Shader.Find(ShaderName);
+            string shaderName = "VAT/VAT";
+            if (UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null)
+            {
+                string rpName = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline.GetType().Name;
+                if (rpName.Contains("Universal")) shaderName = "VAT/VAT_URP";
+                else if (rpName.Contains("HD")) shaderName = "VAT/VAT_HDRP";
+            }
+
+            Shader shader = Shader.Find(shaderName);
             if (shader == null)
             {
-                Debug.LogError($"VAT shader '{ShaderName}' not found.");
-                return null;
+                Debug.LogWarning($"VAT shader '{shaderName}' not found. Falling back to Standard VAT/VAT.");
+                shader = Shader.Find("VAT/VAT");
+                if (shader == null)
+                {
+                    Debug.LogError("Base VAT shader 'VAT/VAT' not found.");
+                    return null;
+                }
             }
 
             if (animData == null || animData.positionTexture == null || animData.normalTexture == null)

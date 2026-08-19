@@ -25,6 +25,7 @@ namespace VATSystem
             // 2. Ganti setiap SkinnedMeshRenderer dengan MeshRenderer + MeshFilter
             var smrs = instance.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             bool anySuccess = false;
+            int vertexOffset = 0;
 
             for (int i = 0; i < smrs.Length && i < bakers.Count; i++)
             {
@@ -36,7 +37,8 @@ namespace VATSystem
                 Object.DestroyImmediate(smr);
 
                 // --- Buat mesh VAT (salinan mesh asli + UV1) dan simpan sebagai aset permanen ---
-                Mesh vatMesh = baker.CreateStaticVATMesh();
+                Mesh vatMesh = baker.CreateStaticVATMesh(vertexOffset, animData.vertexCount);
+                vertexOffset += baker.VertexCount;
                 if (vatMesh == null || vatMesh.vertexCount == 0)
                 {
                     Debug.LogError($"Gagal membuat VAT mesh untuk {go.name}");
