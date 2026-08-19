@@ -5,7 +5,7 @@ namespace VATSystem
 {
     public class VATMaterialFixer : EditorWindow
     {
-        [MenuItem("Tools/VAT/Fix Transparent VAT Materials")]
+        [MenuItem("ExLib/VAT/Fix Transparent VAT Materials")]
         public static void FixTransparentMaterials()
         {
             string[] matGuids = AssetDatabase.FindAssets("t:Material", new[] { "Assets/VAT" });

@@ -96,7 +96,7 @@ namespace VATSystem
         public static (int, int, int) GetTextureDimensions(int vertexCount, int totalFrames)
             => GetDims(vertexCount, totalFrames);
 
-        [MenuItem("Tools/VAT/Fix All Texture Import Settings")]
+        [MenuItem("ExLib/VAT/Fix All Texture Import Settings")]
        // Pastikan method ini ada di VATTextureGenerator.cs (jika belum)
         public static void FixAllTextureImports()
         {

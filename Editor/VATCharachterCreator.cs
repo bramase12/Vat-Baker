@@ -8,7 +8,7 @@ namespace VATSystem
     {
         private const string ShaderName = "VAT/VAT";
 
-        [MenuItem("Tools/VAT/Create Character Prefab")]
+        [MenuItem("ExLib/VAT/Create Character Prefab")]
         public static void CreateCharacterPrefab()
         {
             var selected = Selection.activeObject as GameObject;

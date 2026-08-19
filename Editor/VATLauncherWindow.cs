@@ -23,7 +23,7 @@ namespace VATSystem
             "Utilities", "Settings", "About"
         };
 
-        [MenuItem("Tools/VAT System/VAT Launcher")]
+        [MenuItem("ExLib/VAT/VAT Launcher")]
         public static void ShowWindow()
         {
             var window = GetWindow<VATLauncherWindow>("VAT Launcher");

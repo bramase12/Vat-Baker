@@ -1,6 +1,6 @@
 {
   "name": "com.bramase12.vat-baker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "VAT Baker System",
   "description": "A Vertex Animation Texture (VAT) baking system for Unity. Optimize crowd rendering by offloading skeletal animation computation to the GPU.",
   "unity": "2021.3",

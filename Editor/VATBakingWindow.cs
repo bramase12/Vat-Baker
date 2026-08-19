@@ -17,7 +17,7 @@ namespace VATSystem
         private bool bakeRootMotion = false;
         private Vector2 scrollPos;
 
-        [MenuItem("Tools/VAT/Bake Animations")]
+        [MenuItem("ExLib/VAT/Bake Animations")]
         public static void ShowWindow() => GetWindow<VATBakingWindow>("VAT Baker");
 
         private void OnEnable() => RefreshClips();
