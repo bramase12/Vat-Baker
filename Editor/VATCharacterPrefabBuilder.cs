@@ -52,6 +52,14 @@ namespace VATSystem
                 // Ganti semua SkinnedMeshRenderer dengan MeshRenderer + MeshFilter
                 var smrs = character.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 bool anySuccess = false;
+                
+                int totalVertexCount = 0;
+                for (int i = 0; i < smrs.Length && i < bakers.Count; i++)
+                {
+                    totalVertexCount += bakers[i].VertexCount;
+                }
+                
+                int vertexOffset = 0;
 
                 for (int i = 0; i < smrs.Length && i < bakers.Count; i++)
                 {
@@ -61,7 +69,8 @@ namespace VATSystem
                     Object.DestroyImmediate(smr);
 
                     // Buat mesh VAT dan simpan sebagai aset permanen
-                    Mesh vatMesh = baker.CreateStaticVATMesh();
+                    Mesh vatMesh = baker.CreateStaticVATMesh(vertexOffset, totalVertexCount);
+                    vertexOffset += baker.VertexCount;
                     if (vatMesh == null || vatMesh.vertexCount == 0) continue;
 
                     string meshDir = Path.Combine(characterFolder, "Meshes").Replace("\\", "/");
