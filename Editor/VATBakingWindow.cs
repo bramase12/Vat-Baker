@@ -11,7 +11,7 @@ namespace VATSystem
         private GameObject sourceObject;
         private AnimationClip[] allClips;
         private bool[] clipSelection;
-        private string outputRoot = "Assets/VAT";
+        private string outputRoot = "Assets";
         private float sampleRate = 30f;
         private bool generateTangents = true;
         private bool bakeRootMotion = false;
